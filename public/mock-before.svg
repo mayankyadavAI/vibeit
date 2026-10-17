@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 960" role="img" aria-label="Original portrait mockup">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="960" fill="url(#bg)"/>
+  <ellipse cx="360" cy="980" rx="280" ry="90" fill="#0b1220"/>
+  <circle cx="360" cy="250" r="92" fill="#f8d7c4"/>
+  <path d="M250 360c20-70 80-110 110-110s90 40 110 110c18 62 34 210-6 300H256c-40-90-24-238-6-300z" fill="#334155"/>
+  <rect x="286" y="640" width="64" height="250" rx="18" fill="#1e293b"/>
+  <rect x="370" y="640" width="64" height="250" rx="18" fill="#1e293b"/>
+  <text x="360" y="80" text-anchor="middle" fill="#94a3b8" font-family="Georgia, serif" font-size="22">Studio Portrait</text>
+</svg>
