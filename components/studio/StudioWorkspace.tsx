@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LoaderCircle, Camera, RotateCcw } from "lucide-react";
+import { LoaderCircle, Camera, RotateCcw, Sparkles } from "lucide-react";
 import { Dropzone } from "@/components/studio/Dropzone";
 import { CategoryToggle } from "@/components/studio/CategoryToggle";
 import { TrialSamples } from "@/components/studio/TrialSamples";
@@ -37,6 +37,20 @@ export function StudioWorkspace() {
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
   }, [loading, user, router]);
+
+  if (loading && !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#fbfaf7]">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-stone-900 text-amber-400 border border-stone-800 shadow-md">
+            <LoaderCircle className="h-6 w-6 animate-spin" />
+          </div>
+          <p className="font-editorial text-lg font-bold text-stone-900">Entering Atelier Studio...</p>
+          <p className="text-xs font-mono text-stone-500 uppercase tracking-widest font-semibold">Calibrating Session</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (!generating) return;
@@ -139,71 +153,84 @@ export function StudioWorkspace() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-slate-950">
+      <div className="min-h-screen bg-[#fbfaf7] text-slate-900 flex flex-col">
         <AppNav />
-        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 lg:grid-cols-2">
-          <div className="h-[520px] animate-pulse rounded-3xl bg-slate-900" />
-          <div className="h-[520px] animate-pulse rounded-3xl bg-slate-900" />
+        <div className="mx-auto grid max-w-7xl w-full gap-8 px-4 py-12 sm:px-8 lg:grid-cols-2">
+          <div className="h-[620px] animate-pulse rounded-3xl bg-white border border-stone-200 shadow-sm" />
+          <div className="h-[620px] animate-pulse rounded-3xl bg-white border border-stone-200 shadow-sm" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-[#fbfaf7] text-slate-900 flex flex-col bg-mesh-radial">
       <AppNav />
-      <main className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-2">
-        <section className="rounded-3xl border border-slate-800 bg-slate-900/50 p-4 sm:p-6">
-          <div className="flex items-center justify-between gap-3">
+      <main className="mx-auto grid max-w-7xl w-full gap-8 px-4 py-10 sm:px-8 lg:grid-cols-12 flex-1 items-start">
+        {/* Left Column: Creative Controls */}
+        <section className="glass-panel rounded-3xl border border-stone-200/90 bg-white/90 p-6 sm:p-8 lg:col-span-6 shadow-xl">
+          {/* Dashboard Header Strip */}
+          <div className="flex items-start justify-between gap-4 border-b border-stone-200/80 pb-5">
             <div>
-              <h1 className="text-2xl font-semibold text-white">Control dashboard</h1>
-              <p className="mt-1 text-sm text-slate-400">Drop assets. Choose a zone. Compose the look.</p>
+              <div className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse shadow-sm" />
+                <h1 className="font-editorial text-2xl sm:text-3xl font-bold tracking-tight text-stone-900">
+                  Atelier Control Suite
+                </h1>
+              </div>
+              <p className="mt-1 text-xs text-stone-500 font-normal">
+                Stage assets. Calibrate target zones. Compute photoreal drape.
+              </p>
             </div>
+
             <div className="flex items-center gap-2">
               {hasActiveInputs ? (
                 <button
                   type="button"
                   onClick={handleResetStudio}
                   title="Clear inputs and output"
-                  className="inline-flex items-center gap-1 rounded-full border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-400 transition-all hover:border-slate-700 hover:text-slate-200"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-stone-100 px-3.5 py-1.5 text-[11px] font-mono uppercase tracking-wider text-stone-700 transition-all hover:border-stone-300 hover:text-stone-950 cursor-pointer"
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
+                  <RotateCcw className="h-3 w-3" />
                   Reset
                 </button>
               ) : null}
               <button
                 type="button"
                 onClick={() => setShowCamera(true)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-teal-400/40 bg-teal-400/10 px-3.5 py-1.5 text-xs font-semibold text-teal-300 transition-all duration-200 hover:bg-teal-400/20 hover:scale-[1.02]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-stone-100 px-3.5 py-1.5 text-[11px] font-mono uppercase tracking-wider font-semibold text-stone-800 transition-all duration-300 hover:bg-stone-900 hover:text-white hover:border-stone-900 hover:scale-105 shadow-sm cursor-pointer"
               >
-                <Camera className="h-4 w-4" />
-                Take Selfie
+                <Camera className="h-3.5 w-3.5" />
+                Live Selfie
               </button>
             </div>
           </div>
 
+          {/* Dropzones Grid */}
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <Dropzone
-              label="Portrait photo"
-              hint="Drag a full-face portrait"
+              label="Portrait Subject"
+              hint="High-res portrait photography"
               previewUrl={portrait?.previewUrl ?? null}
               uploading={uploadingPortrait}
               onFile={(file) => void uploadAsset(file, "portrait")}
               onCameraClick={() => setShowCamera(true)}
             />
             <Dropzone
-              label="Garment asset"
-              hint="Drag apparel photography"
+              label="Garment Specimen"
+              hint="Flatlay or mannequin apparel"
               previewUrl={garment?.previewUrl ?? null}
               uploading={uploadingGarment}
               onFile={(file) => void uploadAsset(file, "garment")}
             />
           </div>
 
+          {/* Category Selector */}
           <div className="mt-6">
             <CategoryToggle value={category} onChange={handleCategoryChange} />
           </div>
 
+          {/* Preset Samples */}
           <div className="mt-6">
             <TrialSamples
               onSelectPortrait={(file) => uploadAsset(file, "portrait")}
@@ -217,29 +244,45 @@ export function StudioWorkspace() {
             />
           </div>
 
-          {error ? <p className="mt-4 rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-300">{error}</p> : null}
+          {/* Error Alert */}
+          {error ? (
+            <div className="mt-5 rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-xs text-rose-700 font-medium">
+              {error}
+            </div>
+          ) : null}
 
-          <button
-            type="button"
-            onClick={() => void generateLook()}
-            disabled={generating || uploadingPortrait || uploadingGarment}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-teal-400 px-5 py-3 text-sm font-semibold text-slate-950 transition-all duration-300 hover:scale-[1.02] hover:bg-teal-300 disabled:opacity-70"
-          >
-            {generating ? <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
-            {generating ? "Generating look" : "Generate Look"}
-          </button>
+          {/* Primary Action Button */}
+          <div className="mt-7">
+            <button
+              type="button"
+              onClick={() => void generateLook()}
+              disabled={generating || uploadingPortrait || uploadingGarment}
+              className="group relative inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-stone-900 px-6 py-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white border border-stone-800 shadow-xl shadow-stone-900/15 transition-all duration-300 hover:bg-stone-800 hover:scale-[1.01] disabled:opacity-60 cursor-pointer"
+            >
+              {generating ? (
+                <LoaderCircle className="h-4 w-4 animate-spin text-amber-400" aria-hidden="true" />
+              ) : (
+                <Sparkles className="h-4 w-4 text-amber-400 transition-transform group-hover:rotate-12" aria-hidden="true" />
+              )}
+              {generating ? "Synthesizing Couture Look..." : "Generate Couture Look"}
+            </button>
+          </div>
         </section>
 
-        <OutputCanvas
-          portraitUrl={portrait?.previewUrl ?? portrait?.storageUrl ?? null}
-          garmentUrl={garment?.previewUrl ?? garment?.storageUrl ?? null}
-          resultUrl={resultUrl}
-          generating={generating}
-          status={status}
-          onClearResult={() => setResultUrl(null)}
-        />
+        {/* Right Column: Output Viewport Canvas */}
+        <div className="lg:col-span-6 sticky top-28">
+          <OutputCanvas
+            portraitUrl={portrait?.previewUrl ?? portrait?.storageUrl ?? null}
+            garmentUrl={garment?.previewUrl ?? garment?.storageUrl ?? null}
+            resultUrl={resultUrl}
+            generating={generating}
+            status={status}
+            onClearResult={() => setResultUrl(null)}
+          />
+        </div>
       </main>
 
+      {/* Hardware Camera Viewfinder Modal */}
       {showCamera ? (
         <CameraCapture
           onCaptureComplete={(file) => {

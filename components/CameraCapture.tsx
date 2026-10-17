@@ -89,32 +89,47 @@ export default function CameraCapture({ onCaptureComplete, onClose }: CameraCapt
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="border border-stone-200/90 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative bg-white/95">
         <button
           type="button"
           onClick={closeCamera}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white"
+          className="absolute top-5 right-5 text-stone-400 hover:text-stone-900 p-1.5 rounded-full border border-stone-200 bg-stone-100 transition-colors cursor-pointer"
+          aria-label="Close camera"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
-        <h3 className="text-lg font-bold text-teal-400 mb-4">Live Portrait Studio</h3>
+        <div className="mb-4">
+          <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-stone-600 font-semibold">Biometric Studio</p>
+          <h3 className="font-editorial text-2xl font-bold text-stone-900">Live Portrait Capture</h3>
+        </div>
 
         {error ? (
-          <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-4 rounded-xl text-sm mb-4">
+          <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-2xl text-xs mb-4 font-medium">
             {error}
           </div>
         ) : (
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-black border border-slate-700">
+          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-black border border-stone-200 shadow-inner">
             {!capturedImage ? (
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className="w-full h-full object-cover scale-x-[-1]"
-              />
+              <>
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full h-full object-cover scale-x-[-1]"
+                />
+                {/* Oval biometric alignment overlay */}
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="h-[75%] w-[60%] rounded-[50%] border-2 border-dashed border-amber-400/70 shadow-[0_0_20px_rgba(180,140,54,0.25)]" />
+                </div>
+                <div className="pointer-events-none absolute bottom-3 inset-x-0 text-center">
+                  <span className="rounded-full bg-black/60 px-3 py-1 text-[10px] font-mono uppercase tracking-widest text-white backdrop-blur-md font-medium">
+                    Align face within frame
+                  </span>
+                </div>
+              </>
             ) : (
               <img
                 src={capturedImage}
@@ -126,31 +141,31 @@ export default function CameraCapture({ onCaptureComplete, onClose }: CameraCapt
           </div>
         )}
 
-        <div className="flex justify-center gap-4 mt-6">
+        <div className="flex justify-center gap-3 mt-6">
           {!capturedImage ? (
             <button
               type="button"
               onClick={captureFrame}
               disabled={Boolean(error)}
-              className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold px-6 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-50 transition-all text-sm"
+              className="flex items-center gap-2 bg-stone-900 hover:bg-stone-800 border border-stone-800 text-white font-semibold px-7 py-3 rounded-full hover:scale-105 disabled:opacity-50 transition-all text-xs font-mono uppercase tracking-wider shadow-xl shadow-stone-900/20 cursor-pointer"
             >
-              <Camera className="w-4 h-4" /> Snap Snapshot
+              <Camera className="w-4 h-4 text-amber-400" /> Capture Portrait
             </button>
           ) : (
             <>
               <button
                 type="button"
                 onClick={() => setCapturedImage(null)}
-                className="flex items-center gap-2 bg-slate-800 text-slate-300 font-semibold px-4 py-2.5 rounded-xl hover:bg-slate-700 transition-all text-sm border border-slate-700"
+                className="flex items-center gap-2 bg-stone-100 text-stone-700 font-semibold px-5 py-2.5 rounded-full hover:bg-stone-200 transition-all text-xs font-mono uppercase tracking-wider border border-stone-200 cursor-pointer"
               >
-                <RefreshCw className="w-4 h-4" /> Retake
+                <RefreshCw className="w-3.5 h-3.5" /> Retake
               </button>
               <button
                 type="button"
                 onClick={acceptCapture}
-                className="flex items-center gap-2 bg-teal-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl hover:bg-teal-300 transition-all text-sm"
+                className="flex items-center gap-2 bg-stone-900 hover:bg-stone-800 border border-stone-800 text-white font-semibold px-6 py-2.5 rounded-full hover:scale-105 transition-all text-xs font-mono uppercase tracking-wider shadow-xl shadow-stone-900/20 cursor-pointer"
               >
-                <Check className="w-4 h-4" /> Save Portrait
+                <Check className="w-3.5 h-3.5 stroke-[3] text-amber-400" /> Confirm & Ingest
               </button>
             </>
           )}

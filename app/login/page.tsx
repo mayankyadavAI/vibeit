@@ -15,10 +15,13 @@ export default function LoginPage() {
   }, [loading, user, router]);
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-[#fbfaf7] text-slate-900 flex flex-col bg-mesh-radial">
       <AppNav />
-      <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
-        <AuthCard />
+      <main className="relative flex flex-1 items-center justify-center px-4 py-16 sm:px-8">
+        <div className="pointer-events-none absolute h-96 w-96 rounded-full bg-gradient-to-tr from-amber-200/20 via-stone-200/25 to-stone-100/20 blur-[120px]" />
+        <div className="relative z-10 w-full flex justify-center">
+          <AuthCard />
+        </div>
       </main>
     </div>
   );

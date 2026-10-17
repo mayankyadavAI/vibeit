@@ -10,7 +10,7 @@ type Mode = "signin" | "signup";
 
 export function AuthCard() {
   const router = useRouter();
-  const { refresh } = useAuth();
+  const { refresh, setUser } = useAuth();
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,8 +20,14 @@ export function AuthCard() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const goToStudio = async () => {
-    await refresh();
+  const goToStudio = (userData?: { id: string; email: string; name?: string | null }) => {
+    if (userData) {
+      setUser({
+        id: userData.id,
+        email: userData.email,
+        name: userData.name ?? userData.email,
+      });
+    }
     router.push("/studio");
   };
 
@@ -38,8 +44,11 @@ export function AuthCard() {
           otp,
         });
         if (verifyError) throw verifyError;
-        if (data?.accessToken || data?.user) {
-          await goToStudio();
+        if (data?.user) {
+          goToStudio(data.user);
+        } else {
+          await refresh();
+          router.push("/studio");
         }
         return;
       }
@@ -56,8 +65,11 @@ export function AuthCard() {
           setNotice("Enter the 6-digit code we sent to your inbox.");
           return;
         }
-        if (data?.accessToken) {
-          await goToStudio();
+        if (data?.user) {
+          goToStudio(data.user);
+        } else {
+          await refresh();
+          router.push("/studio");
         }
         return;
       }
@@ -76,10 +88,18 @@ export function AuthCard() {
         throw signInError;
       }
       if (data?.user) {
-        await goToStudio();
+        goToStudio(data.user);
+      } else {
+        await refresh();
+        router.push("/studio");
       }
-    } catch (caught) {
-      const message = caught instanceof Error ? caught.message : "Authentication failed.";
+    } catch (caught: unknown) {
+      console.error("Auth submit error:", caught);
+      const errObj = caught as { message?: string; error_description?: string };
+      const message =
+        caught instanceof Error
+          ? caught.message
+          : errObj?.message || errObj?.error_description || "Authentication failed. Please check your credentials.";
       setError(message);
     } finally {
       setSubmitting(false);
@@ -87,20 +107,22 @@ export function AuthCard() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/80 p-6 shadow-2xl shadow-teal-500/5 sm:p-8">
-      <div className="mb-6 flex items-center gap-2">
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-400 text-slate-950">
-          <Sparkles className="h-4 w-4" aria-hidden="true" />
-        </span>
+    <div className="w-full max-w-md rounded-3xl border border-stone-200/80 bg-white/95 p-8 sm:p-10 shadow-2xl shadow-stone-900/10 backdrop-blur-2xl">
+      {/* Brand Header */}
+      <div className="mb-8 flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-stone-900 text-amber-400 border border-stone-800 shadow-md">
+          <Sparkles className="h-5 w-5" aria-hidden="true" />
+        </div>
         <div>
-          <p className="text-sm text-slate-400">vibeIt Atelier</p>
-          <h1 className="text-xl font-semibold text-white">
-            {needsVerification ? "Verify your email" : mode === "signin" ? "Welcome back" : "Create your studio"}
+          <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-stone-600 font-semibold">Maison Portal</p>
+          <h1 className="font-editorial text-2xl font-bold text-stone-900">
+            {needsVerification ? "Verify Email" : mode === "signin" ? "Atelier Sign In" : "Register Atelier"}
           </h1>
         </div>
       </div>
 
-      <div className="mb-6 grid grid-cols-2 rounded-full bg-slate-950 p-1 text-sm">
+      {/* Segmented Toggle */}
+      <div className="mb-6 grid grid-cols-2 rounded-2xl bg-stone-100 p-1.5 border border-stone-200 text-xs font-mono uppercase tracking-wider">
         {(["signin", "signup"] as const).map((value) => (
           <button
             key={value}
@@ -111,8 +133,10 @@ export function AuthCard() {
               setError(null);
               setNotice(null);
             }}
-            className={`rounded-full px-4 py-2 font-medium transition-all duration-300 ${
-              mode === value ? "bg-teal-400 text-slate-950" : "text-slate-400 hover:text-white"
+            className={`rounded-xl py-2.5 font-semibold transition-all duration-300 cursor-pointer ${
+              mode === value
+                ? "bg-stone-900 text-white shadow-sm"
+                : "text-stone-600 hover:text-stone-900"
             }`}
           >
             {value === "signin" ? "Sign In" : "Sign Up"}
@@ -120,20 +144,23 @@ export function AuthCard() {
         ))}
       </div>
 
+
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <label className="text-sm text-slate-300">
-          Email
+        <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold">
+          Email Address
           <input
             type="email"
             required
             autoComplete="email"
             value={email}
+            placeholder="curator@atelier.com"
             onChange={(event) => setEmail(event.target.value)}
-            className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-white outline-none transition-all duration-300 focus:border-teal-400"
+            className="mt-1.5 w-full rounded-xl border border-stone-300 bg-stone-50/70 px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all duration-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/20"
           />
         </label>
+
         {!needsVerification ? (
-          <label className="text-sm text-slate-300">
+          <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold">
             Password
             <input
               type="password"
@@ -141,12 +168,13 @@ export function AuthCard() {
               minLength={6}
               autoComplete={mode === "signin" ? "current-password" : "new-password"}
               value={password}
+              placeholder="••••••••"
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-white outline-none transition-all duration-300 focus:border-teal-400"
+              className="mt-1.5 w-full rounded-xl border border-stone-300 bg-stone-50/70 px-4 py-3 text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all duration-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/20"
             />
           </label>
         ) : (
-          <label className="text-sm text-slate-300">
+          <label className="text-xs font-mono uppercase tracking-wider text-stone-700 font-semibold">
             Verification code
             <input
               type="text"
@@ -155,20 +183,34 @@ export function AuthCard() {
               required
               value={otp}
               onChange={(event) => setOtp(event.target.value)}
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 tracking-[0.4em] text-white outline-none transition-all duration-300 focus:border-teal-400"
+              className="mt-1.5 w-full rounded-xl border border-stone-300 bg-stone-50/70 px-4 py-3 tracking-[0.4em] text-center text-lg text-stone-900 outline-none transition-all duration-300 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/20"
             />
           </label>
         )}
 
-        {notice ? <p className="rounded-xl bg-teal-400/10 px-3 py-2 text-sm text-teal-200">{notice}</p> : null}
-        {error ? <p className="rounded-xl bg-rose-500/10 px-3 py-2 text-sm text-rose-300">{error}</p> : null}
+        {notice ? (
+          <p className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-xs text-emerald-800 font-medium">
+            {notice}
+          </p>
+        ) : null}
+        {error ? (
+          <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-xs text-rose-700 font-medium">
+            {error}
+          </p>
+        ) : null}
 
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 rounded-full bg-teal-400 px-4 py-3 text-sm font-semibold text-slate-950 transition-all duration-300 hover:scale-[1.02] hover:bg-teal-300 disabled:opacity-70"
+          className="mt-4 rounded-full bg-stone-900 hover:bg-stone-800 border border-stone-800 py-3.5 text-xs font-semibold uppercase tracking-wider text-white transition-all duration-300 hover:scale-[1.01] shadow-xl shadow-stone-900/15 disabled:opacity-60 cursor-pointer"
         >
-          {submitting ? "Verifying..." : needsVerification ? "Confirm code" : mode === "signin" ? "Sign in" : "Create account"}
+          {submitting
+            ? "Authenticating..."
+            : needsVerification
+            ? "Confirm Code"
+            : mode === "signin"
+            ? "Enter Atelier Studio"
+            : "Create Atelier Account"}
         </button>
       </form>
     </div>
