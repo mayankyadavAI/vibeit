@@ -17,9 +17,7 @@
 ## 🎥 Demo Video
 
 <!-- Replace the link/thumbnail below with your Loom, YouTube, or MP4 video URL -->
-[![VibeIt Video Walkthrough](https://placehold.co/1200x675/090d16/2dd4bf?text=▶+Click+to+Watch+VibeIt+Demo+Video)](https://856kht2i.insforge.site)
-
-> 💡 **Demo Video Placeholder:** Replace the above image link with your recorded video walkthrough (Loom, YouTube, or direct MP4 link).
+[![VibeIt Video Walkthrough](https://www.youtube.com/watch?v=OpQyLKC3dw8)
 
 ---
 
@@ -27,14 +25,21 @@
 
 <!-- Replace these placeholder images with your actual screenshots in /public or hosted URLs -->
 
+<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/605cf2a0-9420-4391-9812-30dcbc7b33d5" />
+
+
 | Studio Workspace & Try-On | Interactive Before/After Slider |
 | :---: | :---: |
-| ![Studio Workspace](https://placehold.co/600x380/090d16/2dd4bf?text=Studio+Workspace+Screenshot) | ![Before After Slider](https://placehold.co/600x380/090d16/2dd4bf?text=Before+%26+After+Slider+Screenshot) |
+| ![Studio Workspace](<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/b1a76059-bc0d-4d91-bb0f-7c10824b8a2c" />
+) | ![Before After Slider](<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/aa7e503d-3cbc-4dfe-a87e-e9ce912f1293" />
+) |
 | *Intuitive studio for uploading model photo & garment* | *Interactive split-view comparison slider* |
 
 | Garment & Category Selection | History & Creations Vault |
 | :---: | :---: |
-| ![Garment Selection](https://placehold.co/600x380/090d16/2dd4bf?text=Garment+Categories+Screenshot) | ![History Vault](https://placehold.co/600x380/090d16/2dd4bf?text=Creations+History+Screenshot) |
+| ![Garment Selection](<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/7181e36e-0ef9-4312-8a20-0bde1748b616" />
+) | ![History Vault](<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/e3d9723f-4c0b-4e52-82d7-cd255f9f5850" />
+) |
 | *Tops, bottoms, dresses & preloaded sample garments* | *Persistent cloud history of past try-on generations* |
 
 ---
