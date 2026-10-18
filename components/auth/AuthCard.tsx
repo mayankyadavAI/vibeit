@@ -65,10 +65,23 @@ export function AuthCard() {
           setNotice("Enter the 6-digit code we sent to your inbox.");
           return;
         }
-        if (data?.user) {
-          goToStudio(data.user);
+
+        let activeUser = data?.user;
+        // Fallback to sign in if access token wasn't directly issued
+        if (!data?.accessToken) {
+          const { data: signInData, error: signInErr } = await insforge.auth.signInWithPassword({
+            email,
+            password,
+          });
+          if (!signInErr && signInData?.user) {
+            activeUser = signInData.user;
+          }
+        }
+
+        await refresh();
+        if (activeUser) {
+          goToStudio(activeUser);
         } else {
-          await refresh();
           router.push("/studio");
         }
         return;
@@ -95,12 +108,19 @@ export function AuthCard() {
       }
     } catch (caught: unknown) {
       console.error("Auth submit error:", caught);
-      const errObj = caught as { message?: string; error_description?: string };
-      const message =
+      const errObj = caught as { message?: string; error_description?: string; error?: string };
+      const rawMessage =
         caught instanceof Error
           ? caught.message
-          : errObj?.message || errObj?.error_description || "Authentication failed. Please check your credentials.";
-      setError(message);
+          : errObj?.message || errObj?.error_description || "";
+      
+      let friendlyMessage = rawMessage || "Authentication failed. Please check your credentials.";
+      if (rawMessage.toLowerCase().includes("user already exists") || errObj?.error === "AUTH_EMAIL_EXISTS") {
+        friendlyMessage = "An account with this email already exists. Please switch to Sign In.";
+      } else if (rawMessage.toLowerCase().includes("invalid credentials")) {
+        friendlyMessage = "Invalid email or password. Please verify your credentials.";
+      }
+      setError(friendlyMessage);
     } finally {
       setSubmitting(false);
     }
