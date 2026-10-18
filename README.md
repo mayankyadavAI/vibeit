@@ -17,8 +17,8 @@
 ## 🎥 Demo Video
 
 <!-- Replace the link/thumbnail below with your Loom, YouTube, or MP4 video URL -->
-[![VibeIt Video Walkthrough](https://www.youtube.com/watch?v=OpQyLKC3dw8)
-
+[![VibeIt Video Walkthrough]
+https://www.youtube.com/watch?v=OpQyLKC3dw8
 ---
 
 ## 📸 Screenshots
